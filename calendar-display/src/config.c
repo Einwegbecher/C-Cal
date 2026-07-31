@@ -331,14 +331,13 @@ int config_save(AppConfig *config, const char *filename) {
     }
     
     // Ensure directory exists
-    char *dir = strdup(filename);
-    if (dir) {
-        char *last_slash = strrchr(dir, '/');
-        if (last_slash) {
-            *last_slash = '\0';
-            mkdir(dir, 0755);
-        }
-        free(dir);
+    char dir[1024];
+    strncpy(dir, filename, sizeof(dir) - 1);
+    dir[sizeof(dir) - 1] = '\0';
+    char *last_slash = strrchr(dir, '/');
+    if (last_slash) {
+        *last_slash = '\0';
+        mkdir(dir, 0755);
     }
     
     fprintf(fp, "{\n");
