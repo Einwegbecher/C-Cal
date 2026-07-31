@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "caldav_client.h"
+#include "display.h"
 #include <microhttpd.h>
 
 // Server state

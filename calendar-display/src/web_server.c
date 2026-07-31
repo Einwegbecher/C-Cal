@@ -347,14 +347,15 @@ void send_error_response(struct MHD_Connection *connection, int status_code, con
 }
 
 // Handle GET / (root)
-void handle_get_root(struct MHD_Connection *connection, const char *url) {
+void handle_get_root(void *cls, struct MHD_Connection *connection, const char *url) {
+    (void)cls; // Unused parameter
     (void)url; // Unused parameter
     send_html_response(connection, get_index_html());
 }
 
 // Handle GET /endpoints
-void handle_get_endpoints(struct MHD_Connection *connection) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_get_endpoints(void *cls, struct MHD_Connection *connection) {
+    WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -389,8 +390,8 @@ void handle_get_endpoints(struct MHD_Connection *connection) {
 }
 
 // Handle GET /config
-void handle_get_config(struct MHD_Connection *connection) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_get_config(void *cls, struct MHD_Connection *connection) {
+    WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -408,8 +409,8 @@ void handle_get_config(struct MHD_Connection *connection) {
 }
 
 // Handle POST /add-endpoint
-void handle_post_add_endpoint(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_post_add_endpoint(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
+    WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -515,8 +516,8 @@ void handle_post_add_endpoint(struct MHD_Connection *connection, const char *upl
 }
 
 // Handle POST /remove-endpoint
-void handle_post_remove_endpoint(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_post_remove_endpoint(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
+    WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -550,8 +551,8 @@ void handle_post_remove_endpoint(struct MHD_Connection *connection, const char *
 }
 
 // Handle POST /refresh
-void handle_post_refresh(struct MHD_Connection *connection) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_post_refresh(void *cls, struct MHD_Connection *connection) {
+    WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -559,7 +560,6 @@ void handle_post_refresh(struct MHD_Connection *connection) {
     }
     
     // Trigger a refresh of all calendars
-    CalendarResult result;
     CalendarEvent all_events[MAX_EVENTS];
     int total_events = 0;
     
@@ -604,8 +604,9 @@ void handle_post_refresh(struct MHD_Connection *connection) {
 }
 
 // Handle POST /config
-void handle_post_config(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
-    WebServerState *state = (WebServerState *)MHD_get_connection_user_value(connection, NULL);
+void handle_post_config(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
+    WebServerState *state = (WebServerState *)cls;
+    (void)upload_data_size; // Unused parameter
     
     if (!state || !state->config) {
         send_error_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, "Server not configured");
@@ -651,17 +652,16 @@ static int answer_to_connection(void *cls, struct MHD_Connection *connection,
     WebServerState *state = (WebServerState *)cls;
     
     (void)version; // Unused parameter
-    
-    // Set user value for this connection
-    MHD_set_connection_user_value(connection, state, NULL);
+    (void)con_cls; // Unused parameter
+    (void)upload_data_size; // Unused parameter
     
     if (strcmp(method, "GET") == 0) {
         if (strcmp(url, "/") == 0 || strcmp(url, "/index.html") == 0) {
-            handle_get_root(connection, url);
+            handle_get_root(cls, connection, url);
         } else if (strcmp(url, "/endpoints") == 0) {
-            handle_get_endpoints(connection);
+            handle_get_endpoints(cls, connection);
         } else if (strcmp(url, "/config") == 0) {
-            handle_get_config(connection);
+            handle_get_config(cls, connection);
         } else {
             // Serve static files from web directory
             // For simplicity, we'll just return 404 for now
@@ -669,13 +669,13 @@ static int answer_to_connection(void *cls, struct MHD_Connection *connection,
         }
     } else if (strcmp(method, "POST") == 0) {
         if (strcmp(url, "/add-endpoint") == 0) {
-            handle_post_add_endpoint(connection, upload_data, *upload_data_size);
+            handle_post_add_endpoint(cls, connection, upload_data, *upload_data_size);
         } else if (strcmp(url, "/remove-endpoint") == 0) {
-            handle_post_remove_endpoint(connection, upload_data, *upload_data_size);
+            handle_post_remove_endpoint(cls, connection, upload_data, *upload_data_size);
         } else if (strcmp(url, "/refresh") == 0) {
-            handle_post_refresh(connection);
+            handle_post_refresh(cls, connection);
         } else if (strcmp(url, "/config") == 0) {
-            handle_post_config(connection, upload_data, *upload_data_size);
+            handle_post_config(cls, connection, upload_data, *upload_data_size);
         } else {
             send_error_response(connection, MHD_HTTP_NOT_FOUND, "Not found");
         }
@@ -696,8 +696,8 @@ int web_server_start(WebServerState *state, AppConfig *config, DisplayState *dis
     state->port = port;
     
     // Start MHD daemon
-    state->daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNAL_POLL_THREAD, port, NULL, NULL,
-                                     (MHD_AcceptPolicyCallback)answer_to_connection, state,
+    state->daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLL_THREAD, port, NULL, NULL,
+                                     answer_to_connection, state,
                                      MHD_OPTION_END);
     
     if (!state->daemon) {
