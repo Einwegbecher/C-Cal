@@ -64,8 +64,8 @@ int EPD_2in15g_test(void)
     printf("Drawing:Hello World\r\n");
     Paint_DrawString_EN(10, 0, "Hello World", &Font16, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
     Paint_DrawString_EN(10, 20, "This is line 2", &Font16, EPD_2IN15G_WHITE, EPD_2IN15G_BLACK);
-    Paint_DrawString_EN(10, 40, "This is line 3", &Font16, EPD_2IN15G_WHITE, EPD_2IN15G_RED);
-    Paint_DrawString_EN(10, 60, "This is line 4", &Font16, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
+    Paint_DrawString_EN(10, 40, "This is line 3 and absolutely useless. 16:30 - 17:00", &Font16, EPD_2IN15G_WHITE, EPD_2IN15G_RED);
+    Paint_DrawString_EN(10, 60, "This is line 4 and hopefully yellow!", &Font16, EPD_2IN15G_BLACK, EPD_2IN15G_YELLOW);
 
     printf("EPD_Display\r\n");
     EPD_2IN15G_Display(BlackImage);
