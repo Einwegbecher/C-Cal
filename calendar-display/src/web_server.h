@@ -44,11 +44,11 @@ void send_json_response(struct MHD_Connection *connection, const char *json);
 void send_error_response(struct MHD_Connection *connection, int status_code, const char *message);
 
 // URL handlers
-void handle_get_root(struct MHD_Connection *connection, const char *url);
-void handle_get_endpoints(struct MHD_Connection *connection);
-void handle_post_add_endpoint(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
-void handle_post_remove_endpoint(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
-void handle_post_refresh(struct MHD_Connection *connection);
-void handle_post_config(struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
+void handle_get_root(void *cls, struct MHD_Connection *connection, const char *url);
+void handle_get_endpoints(void *cls, struct MHD_Connection *connection);
+void handle_post_add_endpoint(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
+void handle_post_remove_endpoint(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
+void handle_post_refresh(void *cls, struct MHD_Connection *connection);
+void handle_post_config(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size);
 
 #endif // __WEB_SERVER_H_

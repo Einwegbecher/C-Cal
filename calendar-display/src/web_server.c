@@ -428,7 +428,6 @@ void handle_post_add_endpoint(void *cls, struct MHD_Connection *connection, cons
     
     // Simple form data parsing
     const char *data = upload_data;
-    size_t size = upload_data_size;
     
     // Look for type
     char *type_ptr = strstr((char *)data, "type=");
@@ -517,6 +516,7 @@ void handle_post_add_endpoint(void *cls, struct MHD_Connection *connection, cons
 
 // Handle POST /remove-endpoint
 void handle_post_remove_endpoint(void *cls, struct MHD_Connection *connection, const char *upload_data, size_t upload_data_size) {
+    (void)upload_data_size; // Unused parameter
     WebServerState *state = (WebServerState *)cls;
     
     if (!state || !state->config) {
@@ -645,12 +645,11 @@ void handle_post_config(void *cls, struct MHD_Connection *connection, const char
 }
 
 // Request handler callback
-static int answer_to_connection(void *cls, struct MHD_Connection *connection, 
+static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *connection, 
                                const char *url, const char *method, 
                                const char *version, const char *upload_data,
                                size_t *upload_data_size, void **con_cls) {
-    WebServerState *state = (WebServerState *)cls;
-    
+    (void)cls; // Unused parameter
     (void)version; // Unused parameter
     (void)con_cls; // Unused parameter
     (void)upload_data_size; // Unused parameter
@@ -696,7 +695,7 @@ int web_server_start(WebServerState *state, AppConfig *config, DisplayState *dis
     state->port = port;
     
     // Start MHD daemon
-    state->daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLL_THREAD, port, NULL, NULL,
+    state->daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLLING_THREAD, port, NULL, NULL,
                                      answer_to_connection, state,
                                      MHD_OPTION_END);
     
