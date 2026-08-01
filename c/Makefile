@@ -4,6 +4,7 @@ DIR_FONTS	 = ./lib/Fonts
 DIR_GUI		 = ./lib/GUI
 DIR_Examples = ./examples
 DIR_BIN		 = ./bin
+DIR_CALDAV	 = ./
 
 EPD = NULL
 ifeq ($(EPD), reserved)
@@ -13,7 +14,7 @@ ifeq ($(EPD), reserved)
 	OBJ_C_Examples = ${DIR_Examples}/reserved_test.c
 	OBJ_C = $(wildcard ${OBJ_C_EPD} ${DIR_GUI}/*.c ${OBJ_C_Examples} ${DIR_Examples}/main.c ${DIR_Examples}/ImageData2.c ${DIR_Examples}/ImageData.c ${DIR_FONTS}/*.c )
 else 
-	OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_GUI}/*.c ${DIR_Examples}/*.c ${DIR_FONTS}/*.c )
+	OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_GUI}/*.c ${DIR_Examples}/*.c ${DIR_FONTS}/*.c ${DIR_CALDAV}/caldav_config.c ${DIR_CALDAV}/calendar_entries.c )
 endif
 
 OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
@@ -81,6 +82,9 @@ ${DIR_BIN}/%.o:$(DIR_FONTS)/%.c
 ${DIR_BIN}/%.o:$(DIR_GUI)/%.c
 	$(CC) $(CFLAGS) -c	$< -o $@ -I $(DIR_Config) $(DEBUG)
 
+${DIR_BIN}/%.o:$(DIR_CALDAV)/%.c
+	$(CC) $(CFLAGS) -c	$< -o $@ -I $(DIR_Config) -I $(DIR_CALDAV) $(DEBUG)
+
 RPI_DEV:
 ifeq ($(USELIB_RPI), USE_DEV_LIB)
 	$(CC) $(CFLAGS) $(DEBUG_RPI) -c	 $(DIR_Config)/dev_hardware_SPI.c -o $(DIR_BIN)/dev_hardware_SPI.o $(LIB_RPI) $(DEBUG)
@@ -99,4 +103,5 @@ JETSON_DEV:
 clean :
 	rm $(DIR_BIN)/*.* 
 	rm $(TARGET) 
+	rm -f caldav_config.conf caldav_config.conf.example calendar_entries.txt
 

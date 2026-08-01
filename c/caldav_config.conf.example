@@ -1,0 +1,35 @@
+# CalDAV Configuration File
+# This is a sample configuration file for the C-Cal CalDAV integration
+# Copy this file to /etc/ccal_caldav.conf and edit the values below
+
+# CalDAV server endpoint URL
+# This should be the full URL to your CalDAV server's calendar endpoint
+# Examples:
+#   - Nextcloud: https://your-server.com/remote.php/dav/calendars/username/calendar-name
+#   - Radicale: https://your-server.com/username/calendar-name/
+#   - Baikal: https://your-server.com/cal.php/calendars/username/calendar-name
+#   - Google Calendar: https://apidata.googleusercontent.com/caldav/v2/calendar-id/events
+endpoint=https://caldav.example.com/caldav.php
+
+# Authentication username
+# This is the username for authenticating with your CalDAV server
+username=your_username
+
+# Authentication password
+# This is the password for authenticating with your CalDAV server
+password=your_password
+
+# Name of the calendar to fetch
+# This is the name of the specific calendar you want to fetch events from
+# If your CalDAV server has multiple calendars, specify the one you want here
+calendar_name=personal
+
+# Use SSL/TLS (true/false)
+# Set to true to use HTTPS (recommended for security)
+# Set to false to use HTTP (not recommended)
+use_ssl=true
+
+# Server port
+# Default is 443 for HTTPS, 80 for HTTP
+# Only change this if your CalDAV server uses a non-standard port
+port=443
