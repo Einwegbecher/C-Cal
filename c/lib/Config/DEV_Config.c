@@ -27,8 +27,8 @@
 # THE SOFTWARE.
 #
 ******************************************************************************/
-#include "DEV_Config.h"
 #include <unistd.h>
+#include "DEV_Config.h"
 
 #if USE_LGPIO_LIB
 int GPIO_Handle;
