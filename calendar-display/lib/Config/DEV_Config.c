@@ -28,6 +28,7 @@
 #
 ******************************************************************************/
 #include "DEV_Config.h"
+#include <unistd.h>
 
 #if USE_LGPIO_LIB
 int GPIO_Handle;
