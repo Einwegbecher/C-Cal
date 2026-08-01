@@ -211,11 +211,11 @@ void DEV_Delay_ms(UDOUBLE xms)
 #elif USE_WIRINGPI_LIB
 	delay(xms);
 #elif  USE_LGPIO_LIB  
-    lguSleep(xms/1000.0);
+    lgSleep(xms/1000.0);
 #elif USE_DEV_LIB
 	UDOUBLE i;
 	for(i=0; i < xms; i++) {
-		usleep(1000);
+		sleep(1000);
 	}
 #endif
 #endif
@@ -223,7 +223,7 @@ void DEV_Delay_ms(UDOUBLE xms)
 #ifdef JETSON
 	UDOUBLE i;
 	for(i=0; i < xms; i++) {
-		usleep(1000);
+		sleep(1000);
 	}
 #endif
 }
