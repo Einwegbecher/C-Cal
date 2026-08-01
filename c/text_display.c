@@ -34,19 +34,19 @@ int main() {
     Paint_SelectImage(BlackImage);
     Paint_Clear(EPD_2IN15G_WHITE);
 
-    // Draw text
-    Paint_DrawString_EN(10, 10, "Hello, Waveshare!", &Font16, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
-    Paint_DrawString_EN(10, 30, "2.15inch E-Paper (G)", &Font12, EPD_2IN15G_RED, EPD_2IN15G_WHITE);
-    Paint_DrawString_EN(10, 50, "Displaying Text!", &Font20, EPD_2IN15G_YELLOW, EPD_2IN15G_WHITE);
+    // Draw only 4 lines of text
+    Paint_DrawString_EN(10, 10, "Hello World", &Font16, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
+    Paint_DrawString_EN(10, 30, "This is line 2", &Font12, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
+    Paint_DrawString_EN(10, 50, "This is line 3", &Font12, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
+    Paint_DrawString_EN(10, 70, "This is line 4", &Font12, EPD_2IN15G_BLACK, EPD_2IN15G_WHITE);
 
     // Display on E-Paper
     printf("Displaying text...\r\n");
     EPD_2IN15G_Display(BlackImage);
     DEV_Delay_ms(5000);  // Display for 5 seconds
 
-    // Cleanup
-    printf("Clearing screen...\r\n");
-    EPD_2IN15G_Clear(EPD_2IN15G_WHITE);
+    // Cleanup - no longer clearing the screen
+    printf("Goto Sleep...\r\n");
     EPD_2IN15G_Sleep();  // Put display to sleep
 
     free(BlackImage);
