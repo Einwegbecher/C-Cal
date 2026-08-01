@@ -1,13 +1,13 @@
 /*****************************************************************************
-* | File        :   gpiod.h
-* | Author      :   Waveshare team
-* | Function    :   Drive GPIO
+* | File        :   RPI_gpiod.h
+* | Author      :   Waveshare team (modified for lgpio)
+* | Function    :   Drive GPIO using lgpio library
 * | Info        :   Read and write gpio
 *----------------
-* |	This version:   V1.0
+* |\tThis version:   V1.0
 * | Date        :   2023-11-15
-* | Info        :   Basic version
-*d
+* | Info        :   Modified to use lgpio instead of libgpiod
+*
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files (the "Software"), to deal
@@ -15,7 +15,7 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to  whom the Software is
 # furished to do so, subject to the following conditions:
-#D
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
 #
@@ -27,28 +27,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-************************D******************************************************/
+******************************************************************************/
 #ifndef __GPIOD_
 #define __GPIOD_
 
 #include <stdio.h>
-
-// Forward declaration for popen (in case it's not visible from stdio.h)
-FILE *popen(const char *command, const char *mode);
-int pclose(FILE *stream);
-
-// Forward declarations for gpiod functions (in case system gpiod.h is not available)
-struct gpiod_chip;
-struct gpiod_line;
-
-struct gpiod_chip *gpiod_chip_open(const char *path);
-void gpiod_chip_close(struct gpiod_chip *chip);
-struct gpiod_line *gpiod_chip_get_line(struct gpiod_chip *chip, unsigned int offset);
-void gpiod_line_release(struct gpiod_line *line);
-int gpiod_line_request_input(struct gpiod_line *line, const char *consumer);
-int gpiod_line_request_output(struct gpiod_line *line, const char *consumer, int default_val);
-int gpiod_line_get_value(struct gpiod_line *line);
-int gpiod_line_set_value(struct gpiod_line *line, int value);
+#include <lgpio.h>
 
 #define GPIOD_IN  0
 #define GPIOD_OUT 1
@@ -90,15 +74,21 @@ int gpiod_line_set_value(struct gpiod_line *line, int value);
 #define GPIO20 20 // 38, 20
 #define GPIO21 21 // 40, 21
 
-extern struct gpiod_chip *gpiochip;
-extern struct gpiod_line *gpioline;
+// Forward declaration for popen (in case it's not visible from stdio.h)
+FILE *popen(const char *command, const char *mode);
+int pclose(FILE *stream);
+
+// Function prototypes
+extern int gpiochip;
+extern int gpioline;
 extern int ret;
 
-int GPIOD_Export();
+int GPIOD_Export(void);
 int GPIOD_Unexport(int Pin);
-int GPIOD_Unexport_GPIO(void);
+int GPIOD_Unexport_GPIO(int Pin);
 int GPIOD_Direction(int Pin, int Dir);
 int GPIOD_Read(int Pin);
-int GPIOD_Write(int Pin, int value);
+int GPIOD_Write(int Pin, int Value);
 
 #endif
+

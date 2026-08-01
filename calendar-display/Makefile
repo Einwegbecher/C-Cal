@@ -40,7 +40,7 @@ SRC_FILES = \
 OBJ_FILES = $(SRC_FILES:.c=.o)
 
 # Compiler flags
-CFLAGS += $(INC_DIRS) -DRPI -DUSE_DEV_LIB -DEPD=epd2in15g
+CFLAGS += $(INC_DIRS) -DRPI -DUSE_LGPIO_LIB -DEPD=epd2in15g
 
 # Build rules
 all: $(TARGET)
